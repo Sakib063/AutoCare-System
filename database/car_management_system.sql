@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 26, 2023 at 08:11 PM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.6
+-- Generation Time: Jul 19, 2023 at 12:25 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -35,28 +35,18 @@ CREATE TABLE `cservice` (
   `vendor_id` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
   `status` varchar(50) NOT NULL DEFAULT 'pending',
-  `date` date DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `date` date DEFAULT current_timestamp(),
+  `address` varchar(100) NOT NULL,
+  `garage` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cservice`
 --
 
-INSERT INTO `cservice` (`owner_phone`, `vphone`, `title`, `service_id`, `vendor_id`, `owner_id`, `status`, `date`) VALUES
-('01612345678', '01333333333', 'Spark Plug Change', 1, 1, 1, 'pending', '2023-04-25'),
-('01612345678', '01333333333', 'Tire change', 2, 2, 2, 'pending', '2023-04-25'),
-('01612345678', '01333333333', 'Tire change', 3, 3, 1, 'reject', '2023-04-25'),
-('01522222222', 'test', 'Tire change', 13, 9, 2, 'pending', '2023-04-26'),
-('01522222222', '000000000', 'Tire change', 14, 9, 2, 'pending', '2023-04-26'),
-('01522222222', '000000000', 'Tire change', 15, 9, 2, 'pending', '2023-04-26'),
-('01522222222', '0190000000', 'Tire change', 17, 3, 2, 'pending', '2023-04-26'),
-('01522222222', '011000000', 'Tire change', 18, 3, 2, 'pending', '2023-04-26'),
-('01522222222', '011000000', 'Tire change', 19, 3, 2, 'pending', '2023-04-26'),
-('01522222222', '01700000000', 'Car Wash', 20, 2, 2, 'pending', '2023-04-26'),
-('01522222222', '0190000000', 'Wheel Change', 21, 3, 2, 'pending', '2023-04-26'),
-('01522222222', '000000000', 'Wiper Change', 22, 9, 2, 'pending', '2023-04-26'),
-('01522222222', '01522222222', 'Engine Diagnosis', 23, 1, 2, 'pending', '2023-04-26'),
-('01522222222', '0190000000', 'Air filter replacement', 24, 3, 2, 'pending', '2023-04-26');
+INSERT INTO `cservice` (`owner_phone`, `vphone`, `title`, `service_id`, `vendor_id`, `owner_id`, `status`, `date`, `address`, `garage`) VALUES
+('01234567891', '0190000000', 'Change Car Battery', 34, 3, 4, 'done', '2023-04-30', 'test user address', ''),
+('01522222222', '01522222222', 'Car Wash', 35, 3, 2, 'pending', '2023-07-19', 'Mirpur 1', 'Sami bhai garage');
 
 -- --------------------------------------------------------
 
@@ -69,17 +59,20 @@ CREATE TABLE `customer_order` (
   `price` int(100) NOT NULL,
   `owner_phone` varchar(11) NOT NULL,
   `vendor_id` int(11) NOT NULL,
-  `customer_name` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `customer_name` varchar(100) DEFAULT NULL,
+  `order_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `status` varchar(100) NOT NULL DEFAULT 'pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer_order`
 --
 
-INSERT INTO `customer_order` (`title`, `price`, `owner_phone`, `vendor_id`, `customer_name`) VALUES
-('Brake Pads', 500, '1611345678', 3, 'A'),
-('Windshield wipers', 300, '1612349679', 2, 'B'),
-('Seat covers', 400, '1612345778', 1, 'C');
+INSERT INTO `customer_order` (`title`, `price`, `owner_phone`, `vendor_id`, `customer_name`, `order_id`, `owner_id`, `status`) VALUES
+('Brake Pads', 500, '1611345678', 3, 'Saadman', 1, 2, 'done'),
+('Windshield wipers', 300, '1612349679', 2, 'Saadman', 2, 2, 'pending'),
+('Seat covers', 400, '1612345778', 1, 'Saadman', 3, 2, 'done');
 
 -- --------------------------------------------------------
 
@@ -94,7 +87,7 @@ CREATE TABLE `garage` (
   `phone` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `vendor_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `garage`
@@ -105,7 +98,8 @@ INSERT INTO `garage` (`g_id`, `name`, `address`, `phone`, `email`, `vendor_id`) 
 (5, 'Tom Garage', 'Dhaka', '01700000000', 'test@email.com', 2),
 (6, 'sami garage', 'Dhanmondi', '0190000000', 'sami@email.com', 3),
 (7, 'sami garage 2', 'DMD', '011000000', 'sami@email.com', 3),
-(8, 'test', 'test', '000000000', 'test@test.com', 9);
+(8, 'test', 'test', '000000000', 'test@test.com', 9),
+(9, 'Sami bhai garage', 'DMD', '01522222222', 'sami@sami.com', 3);
 
 -- --------------------------------------------------------
 
@@ -121,7 +115,7 @@ CREATE TABLE `images` (
   `category` varchar(10) NOT NULL,
   `price` int(255) NOT NULL,
   `vendor_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `images`
@@ -150,15 +144,16 @@ CREATE TABLE `owners_info` (
   `owner_address` varchar(100) NOT NULL,
   `password` varchar(16) NOT NULL,
   `owner_email` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `owners_info`
 --
 
 INSERT INTO `owners_info` (`owner_id`, `owner_name`, `owner_phone_number`, `owner_address`, `password`, `owner_email`) VALUES
-(1, 'Musarrat Zeba', '01999999999', 'Mirpur 13', '12345', 'zeba@email.com'),
-(2, 'Saadman', '01522222222', 'Mirpur 1', '1234', 'sakib@email.com');
+(1, 'Zeba Apa', '01999999999', 'Mirpur 13', '12345', 'zeba@email.com'),
+(2, 'Saadman', '01522222222', 'Mirpur 1', '1234', 'sakib@email.com'),
+(4, 'test user name', '01234567891', 'test user address', '1234', 'testusername@email.com');
 
 -- --------------------------------------------------------
 
@@ -173,7 +168,7 @@ CREATE TABLE `vehicle_info` (
   `owner_id` int(11) NOT NULL,
   `brand` varchar(255) NOT NULL,
   `cyear` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `vehicle_info`
@@ -181,11 +176,9 @@ CREATE TABLE `vehicle_info` (
 
 INSERT INTO `vehicle_info` (`v_id`, `model`, `milage`, `owner_id`, `brand`, `cyear`) VALUES
 (4, 'Agurao', 18000, 2, 'Lamborgini', 2010),
-(5, '', 0, 2, '', 0),
-(6, '', 0, 2, '', 0),
-(7, '', 0, 2, '', 0),
-(8, '', 0, 2, '', 0),
-(9, 'Corolla', 15000, 1, 'Toyota', 2008);
+(9, 'Corolla', 15000, 1, 'Toyota', 2008),
+(10, 'test', 18000, 4, 'test car', 2010),
+(11, 'Supro', 1000, 2, 'Toyota', 2000);
 
 -- --------------------------------------------------------
 
@@ -199,7 +192,7 @@ CREATE TABLE `vendor_info` (
   `vendor_phone_number` varchar(11) NOT NULL,
   `vendor_email` varchar(100) NOT NULL,
   `password` varchar(16) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `vendor_info`
@@ -209,8 +202,7 @@ INSERT INTO `vendor_info` (`vendor_id`, `vendor_name`, `vendor_phone_number`, `v
 (1, 'Ali', '01555555555', 'ali@gmail.com', '1234'),
 (2, 'Tom', '01555555555', 'tom@email.com', '1234'),
 (3, 'Sami', '01888888888', 'sami@email.com', '1234'),
-(4, 'Rodoshi', '01333333333', 'r@email.com', '1234'),
-(9, 'test vendor', '01900000', 'test@email.com', '1234');
+(4, 'Rodoshi', '01333333333', 'r@email.com', '1234');
 
 --
 -- Indexes for dumped tables
@@ -221,6 +213,14 @@ INSERT INTO `vendor_info` (`vendor_id`, `vendor_name`, `vendor_phone_number`, `v
 --
 ALTER TABLE `cservice`
   ADD PRIMARY KEY (`service_id`);
+
+--
+-- Indexes for table `customer_order`
+--
+ALTER TABLE `customer_order`
+  ADD PRIMARY KEY (`order_id`),
+  ADD KEY `fk_owner` (`owner_id`),
+  ADD KEY `fk_vendor` (`vendor_id`);
 
 --
 -- Indexes for table `garage`
@@ -256,25 +256,31 @@ ALTER TABLE `vendor_info`
 -- AUTO_INCREMENT for table `cservice`
 --
 ALTER TABLE `cservice`
-  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- AUTO_INCREMENT for table `customer_order`
+--
+ALTER TABLE `customer_order`
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `garage`
 --
 ALTER TABLE `garage`
-  MODIFY `g_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `g_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `owners_info`
 --
 ALTER TABLE `owners_info`
-  MODIFY `owner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `owner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `vehicle_info`
 --
 ALTER TABLE `vehicle_info`
-  MODIFY `v_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `v_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `vendor_info`
@@ -287,10 +293,11 @@ ALTER TABLE `vendor_info`
 --
 
 --
--- Constraints for table `garage`
+-- Constraints for table `customer_order`
 --
-ALTER TABLE `garage`
-  ADD CONSTRAINT `garage_ibfk_1` FOREIGN KEY (`vendor_id`) REFERENCES `vendor_info` (`vendor_id`);
+ALTER TABLE `customer_order`
+  ADD CONSTRAINT `fk_owner` FOREIGN KEY (`owner_id`) REFERENCES `owners_info` (`owner_id`),
+  ADD CONSTRAINT `fk_vendor` FOREIGN KEY (`vendor_id`) REFERENCES `vendor_info` (`vendor_id`);
 
 --
 -- Constraints for table `vehicle_info`
